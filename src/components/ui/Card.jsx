@@ -1,0 +1,16 @@
+import React from 'react'
+import clsx from 'clsx'
+
+const Card = ({ children, className, ...props }) => (
+  <div
+    className={clsx(
+      'bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-6',
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </div>
+)
+
+export default Card
