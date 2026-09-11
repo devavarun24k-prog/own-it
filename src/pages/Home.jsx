@@ -1,235 +1,184 @@
-import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { useAuthStore } from '@store/authStore'
-import { useWardrobeStore } from '@store/wardrobeStore'
-import { useOutfitStore } from '@store/outfitStore'
-import SectionHeading from '@components/ui/SectionHeading'
-import Button from '@components/ui/Button'
 
-const Home = () => {
-  const { user } = useAuthStore()
-  const { items, initializeDemoData: initializeWardrobe } = useWardrobeStore()
-  const { outfits, initializeDemoData: initializeOutfits } = useOutfitStore()
-  const [currentHour, setCurrentHour] = useState(new Date().getHours())
-  const [weather, setWeather] = useState({
-    temp: 31,
-    condition: 'Sunny',
-    location: 'Tiruchirappalli',
-  })
+const features = [
+  {
+    icon: '👗',
+    title: 'Smart Wardrobe',
+    description: 'Organize and catalog all your clothing items in one beautiful place',
+  },
+  {
+    icon: '🤖',
+    title: 'AI Stylist',
+    description: 'Get personalized outfit recommendations from our intelligent AI assistant',
+  },
+  {
+    icon: '✨',
+    title: 'Style Guide',
+    description: 'Discover trending combinations and styling tips tailored to your taste',
+  },
+  {
+    icon: '📸',
+    title: 'Photo Upload',
+    description: 'Easily add items to your wardrobe using photos or manual entry',
+  },
+]
 
-  useEffect(() => {
-    // Initialize demo data on first load
-    if (items.length === 0) {
-      initializeWardrobe()
-    }
-    if (outfits.length === 0) {
-      initializeOutfits()
-    }
-  }, [])
+const testimonials = [
+  {
+    name: 'Sarah M.',
+    role: 'Fashion Enthusiast',
+    text: 'OWN IT has completely transformed how I manage my wardrobe. The AI recommendations are spot-on!',
+    avatar: '👩',
+  },
+  {
+    name: 'James L.',
+    role: 'Style Consultant',
+    text: 'Finally, a tool that understands personal style. The interface is intuitive and the features are powerful.',
+    avatar: '👨',
+  },
+  {
+    name: 'Emma R.',
+    role: 'Sustainable Fashion Advocate',
+    text: 'I love how OWN IT helps me maximize my existing wardrobe instead of buying more.',
+    avatar: '👩‍🦱',
+  },
+]
 
-  const getGreeting = () => {
-    if (currentHour < 12) return 'Good Morning'
-    if (currentHour < 18) return 'Good Afternoon'
-    return 'Good Evening'
-  }
-
-  const recommendedOutfit = outfits.find(o => o.isRecent) || outfits[0]
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  }
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="flex flex-col">
       {/* Hero Section */}
-      <motion.section
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="max-w-6xl mx-auto px-6 md:px-12 py-16 space-y-8"
-      >
-        {/* Greeting */}
-        <motion.div variants={itemVariants}>
-          <h1 className="text-5xl md:text-6xl font-serif font-bold text-deep-brown">
-            {getGreeting()}, {user?.firstName}
-          </h1>
-          <p className="text-lg text-muted-burgundy mt-2">Let's find you something amazing to wear today.</p>
-        </motion.div>
-
-        {/* Weather Card */}
-        <motion.div
-          variants={itemVariants}
-          className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-burgundy uppercase tracking-widest">Today's Weather</p>
-              <div className="mt-3 space-y-1">
-                <p className="text-4xl font-bold text-deep-brown">{weather.temp}°C</p>
-                <p className="text-lg text-muted-burgundy">{weather.condition}</p>
-                <p className="text-sm text-soft-gold">{weather.location}</p>
-              </div>
-            </div>
-            <div className="text-6xl">☀️</div>
-          </div>
-        </motion.div>
-      </motion.section>
-
-      {/* Outfit Recommendation */}
-      <motion.section
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="max-w-6xl mx-auto px-6 md:px-12 py-16"
-      >
-        <motion.div variants={itemVariants} className="mb-8">
-          <h2 className="text-4xl font-serif font-bold text-deep-brown mb-2">
-            Here's what I'd wear today
-          </h2>
-          <p className="text-muted-burgundy">Based on the weather, your style, and recent outfits</p>
-        </motion.div>
-
-        <motion.div
-          variants={itemVariants}
-          className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
-        >
-          {/* Outfit Preview */}
+      <section className="min-h-screen flex items-center justify-center px-4 py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-50 to-orange-50"></div>
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
           <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="rounded-lg overflow-hidden shadow-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <img
-              src={recommendedOutfit?.imageUrl || 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=600&fit=crop'}
-              alt="Recommended Outfit"
-              className="w-full h-96 object-cover"
-            />
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 gradient-text">
+              Make It Yours
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-700 mb-8">
+              Your AI-powered personal wardrobe and fashion experience
+            </p>
+            <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+              OWN IT helps you organize your style, discover new outfits, and become the best version of your fashionable self.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/wardrobe" className="btn-primary">
+                Start Your Wardrobe →
+              </Link>
+              <Link to="/ai-assistant" className="btn-secondary">
+                Chat with AI Stylist
+              </Link>
+            </div>
           </motion.div>
 
-          {/* Outfit Details */}
-          <motion.div variants={containerVariants} className="space-y-8">
-            <motion.div variants={itemVariants}>
-              <h3 className="text-3xl font-serif font-bold text-deep-brown mb-2">
-                {recommendedOutfit?.name || 'Minimalist Work'}
-              </h3>
-              <div className="flex gap-4 flex-wrap">
-                <span className="px-4 py-2 bg-warm-beige rounded-full text-sm font-medium text-deep-brown">
-                  {recommendedOutfit?.mood || 'Confident'}
-                </span>
-                <span className="px-4 py-2 bg-warm-beige rounded-full text-sm font-medium text-deep-brown">
-                  {recommendedOutfit?.occasion || 'Work'}
-                </span>
-              </div>
-            </motion.div>
-
-            <motion.p
-              variants={itemVariants}
-              className="text-lg text-muted-burgundy leading-relaxed"
-            >
-              {recommendedOutfit?.description || 'Clean, professional, and effortless. Perfect for a productive day.'}
-            </motion.p>
-
-            <motion.div variants={itemVariants} className="space-y-3">
-              <div className="bg-warm-beige rounded-lg p-4">
-                <p className="text-sm text-muted-burgundy uppercase tracking-widest mb-2">Why this?</p>
-                <p className="text-deep-brown">
-                  I chose this because it's {weather.temp}°C and {weather.condition.toLowerCase()}, you're dressing for work, and you haven't worn this combination recently.
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="flex gap-4">
-              <Button size="lg" className="flex-1">
-                Try It On
-              </Button>
-              <Button variant="secondary" size="lg" className="flex-1">
-                Change Look
-              </Button>
-            </motion.div>
+          {/* Hero Image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-16 w-full max-w-2xl"
+          >
+            <div className="relative w-full aspect-square bg-gradient-to-br from-amber-200 to-orange-300 rounded-2xl flex items-center justify-center shadow-2xl">
+              <span className="text-9xl">👗</span>
+            </div>
           </motion.div>
-        </motion.div>
-      </motion.section>
-
-      {/* Quick Stats */}
-      <motion.section
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="max-w-6xl mx-auto px-6 md:px-12 py-16"
-      >
-        <motion.h2 variants={itemVariants} className="text-3xl font-serif font-bold text-deep-brown mb-8">
-          Your Wardrobe at a Glance
-        </motion.h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { label: 'Total Items', value: items.length },
-            { label: 'Favorite Outfits', value: outfits.filter(o => o.isFavorite).length },
-            { label: 'Recent Outfits', value: outfits.filter(o => o.isRecent).length },
-          ].map((stat, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="bg-white rounded-lg p-6 text-center hover:shadow-lg transition-shadow"
-            >
-              <p className="text-sm text-muted-burgundy uppercase tracking-widest mb-2">
-                {stat.label}
-              </p>
-              <p className="text-4xl font-serif font-bold text-deep-brown">
-                {stat.value}
-              </p>
-            </motion.div>
-          ))}
         </div>
-      </motion.section>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">
+              Powerful Features
+            </h2>
+            <p className="text-xl text-gray-600">
+              Everything you need to master your style
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {features.map((feature, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="card-shadow p-8 rounded-xl bg-gradient-to-br from-white to-amber-50 hover:shadow-xl transition-shadow"
+              >
+                <div className="text-5xl mb-4">{feature.icon}</div>
+                <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 px-4 bg-gradient-to-br from-amber-50 to-orange-50">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">
+              What People Love About OWN IT
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="card-shadow p-8 rounded-xl bg-white"
+              >
+                <div className="flex items-center mb-4">
+                  <span className="text-4xl mr-3">{testimonial.avatar}</span>
+                  <div>
+                    <p className="font-bold">{testimonial.name}</p>
+                    <p className="text-sm text-gray-600">{testimonial.role}</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 italic">"<br/>{testimonial.text}<br/>"</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
-      <motion.section
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        className="max-w-6xl mx-auto px-6 md:px-12 py-16"
-      >
-        <motion.div
-          variants={itemVariants}
-          className="bg-warm-beige rounded-lg p-12 text-center space-y-6"
-        >
-          <h3 className="text-4xl font-serif font-bold text-deep-brown">
-            Let's explore your wardrobe
-          </h3>
-          <p className="text-lg text-muted-burgundy">
-            Upload new items, create outfits, and discover your personal style.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" className="px-8">
-              View Wardrobe
-            </Button>
-            <Button variant="outline" size="lg" className="px-8">
-              Use AI Stylist
-            </Button>
-          </div>
-        </motion.div>
-      </motion.section>
+      <section className="py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">
+              Ready to Own Your Style?
+            </h2>
+            <p className="text-xl text-gray-600 mb-8">
+              Join thousands of fashion lovers who are revolutionizing their wardrobes
+            </p>
+            <Link to="/wardrobe" className="btn-primary inline-block">
+              Get Started Now →
+            </Link>
+          </motion.div>
+        </div>
+      </section>
     </div>
   )
 }
-
-export default Home

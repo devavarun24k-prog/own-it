@@ -1,103 +1,215 @@
-import React from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { useAuthStore } from '@store/authStore'
-import SectionHeading from '@components/ui/SectionHeading'
-import Card from '@components/ui/Card'
-import Button from '@components/ui/Button'
+import { useUserStore } from '../store/userStore'
 
-const Profile = () => {
-  const { user } = useAuthStore()
+const styles = ['Classic', 'Trendy', 'Minimalist', 'Bohemian', 'Sporty', 'Formal']
+const budgets = ['Budget', 'Medium', 'Premium', 'Luxury']
+const climates = ['Tropical', 'Temperate', 'Cold', 'Mixed']
+
+export default function Profile() {
+  const { user, setUser, updatePreferences } = useUserStore()
+  const [isEditing, setIsEditing] = useState(false)
+  const [formData, setFormData] = useState({
+    name: user.name,
+    email: user.email,
+    style: user.preferences?.style || 'Classic',
+    budget: user.preferences?.budget || 'Medium',
+    climate: user.preferences?.climate || 'Temperate',
+  })
+
+  const handleSave = () => {
+    setUser({
+      ...user,
+      name: formData.name,
+      email: formData.email,
+    })
+    updatePreferences({
+      style: formData.style,
+      budget: formData.budget,
+      climate: formData.climate,
+    })
+    setIsEditing(false)
+  }
 
   return (
-    <div className="min-h-screen bg-cream">
-      <section className="max-w-6xl mx-auto px-6 md:px-12 py-12">
-        <SectionHeading
-          title="Your Profile"
-          subtitle="Manage your account settings"
-        />
-      </section>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 py-12">
+      <div className="max-w-3xl mx-auto px-4">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-5xl font-bold gradient-text mb-4">Your Profile</h1>
+          <p className="text-gray-600">Manage your personal style preferences</p>
+        </motion.div>
 
-      <section className="max-w-6xl mx-auto px-6 md:px-12 pb-16">
+        {/* Profile Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="card-shadow rounded-2xl bg-white p-8 mb-8"
         >
-          {/* Profile Card */}
-          <div className="md:col-span-2">
-            <Card className="space-y-6">
-              <div className="flex items-center gap-6">
-                <div className="w-24 h-24 bg-warm-beige rounded-full flex items-center justify-center text-4xl">
-                  👤
-                </div>
-                <div className="space-y-2">
-                  <h2 className="text-3xl font-serif font-bold text-deep-brown">
-                    {user?.firstName} {user?.lastName}
-                  </h2>
-                  <p className="text-muted-burgundy">{user?.email}</p>
-                  <p className="text-sm text-soft-gold">Member since {new Date(user?.createdAt).getFullYear()}</p>
-                </div>
-              </div>
-
-              <div className="border-t border-warm-beige pt-6 space-y-4">
-                <h3 className="font-serif font-bold text-deep-brown text-lg">Style Preferences</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-warm-beige rounded-lg">
-                    <p className="text-xs text-muted-burgundy mb-1">Aesthetic</p>
-                    <p className="font-semibold text-deep-brown capitalize">
-                      {user?.profile?.aesthetic || 'Not set'}
-                    </p>
-                  </div>
-                  <div className="p-4 bg-warm-beige rounded-lg">
-                    <p className="text-xs text-muted-burgundy mb-1">Favorite Colors</p>
-                    <p className="font-semibold text-deep-brown">
-                      {user?.profile?.colors?.length || 0} colors
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-warm-beige pt-6 space-y-4">
-                <h3 className="font-serif font-bold text-deep-brown text-lg">Account Settings</h3>
-                <div className="space-y-3">
-                  <Button variant="secondary" className="w-full">Edit Profile</Button>
-                  <Button variant="secondary" className="w-full">Change Password</Button>
-                  <Button variant="secondary" className="w-full">Notification Settings</Button>
-                </div>
-              </div>
-            </Card>
+          {/* Avatar */}
+          <div className="flex justify-center mb-8">
+            <div className="w-32 h-32 bg-gradient-to-br from-amber-400 to-orange-400 rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-6xl">👤</span>
+            </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Form */}
           <div className="space-y-6">
-            <Card className="bg-warm-beige">
-              <h3 className="font-serif font-bold text-deep-brown text-lg mb-4">Quick Stats</h3>
-              <div className="space-y-3 text-deep-brown">
-                <div className="flex justify-between">
-                  <span>Wardrobe Items</span>
-                  <span className="font-bold">32</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Outfits Created</span>
-                  <span className="font-bold">18</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Favorite Items</span>
-                  <span className="font-bold">12</span>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Full Name
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                disabled={!isEditing}
+                className={`input-field ${
+                  !isEditing ? 'bg-gray-100 cursor-not-allowed' : ''
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                disabled={!isEditing}
+                className={`input-field ${
+                  !isEditing ? 'bg-gray-100 cursor-not-allowed' : ''
+                }`}
+              />
+            </div>
+
+            {/* Preferences Section */}
+            <div className="pt-6 border-t border-gray-200">
+              <h3 className="text-xl font-bold mb-6">Style Preferences</h3>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Personal Style
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {styles.map((style) => (
+                    <motion.button
+                      key={style}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() =>
+                        isEditing && setFormData({ ...formData, style })
+                      }
+                      className={`p-3 rounded-lg font-medium transition ${
+                        formData.style === style
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      } ${
+                        !isEditing ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'
+                      }`}
+                      disabled={!isEditing}
+                    >
+                      {style}
+                    </motion.button>
+                  ))}
                 </div>
               </div>
-            </Card>
 
-            <Card>
-              <h3 className="font-serif font-bold text-deep-brown text-lg mb-4">Membership</h3>
-              <p className="text-muted-burgundy text-sm mb-4">You're on the Free plan</p>
-              <Button className="w-full" size="sm">Upgrade to Pro</Button>
-            </Card>
+              <div className="mt-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Budget Range
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {budgets.map((budget) => (
+                    <motion.button
+                      key={budget}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() =>
+                        isEditing && setFormData({ ...formData, budget })
+                      }
+                      className={`p-3 rounded-lg font-medium transition ${
+                        formData.budget === budget
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      } ${
+                        !isEditing ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'
+                      }`}
+                      disabled={!isEditing}
+                    >
+                      {budget}
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Climate
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {climates.map((climate) => (
+                    <motion.button
+                      key={climate}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() =>
+                        isEditing && setFormData({ ...formData, climate })
+                      }
+                      className={`p-3 rounded-lg font-medium transition ${
+                        formData.climate === climate
+                          ? 'bg-amber-600 text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      } ${
+                        !isEditing ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'
+                      }`}
+                      disabled={!isEditing}
+                    >
+                      {climate}
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-8 flex gap-3">
+            {!isEditing ? (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsEditing(true)}
+                className="btn-primary flex-1"
+              >
+                Edit Profile
+              </motion.button>
+            ) : (
+              <>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleSave}
+                  className="btn-primary flex-1"
+                >
+                  Save Changes
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsEditing(false)}
+                  className="btn-secondary flex-1"
+                >
+                  Cancel
+                </motion.button>
+              </>
+            )}
           </div>
         </motion.div>
-      </section>
+      </div>
     </div>
   )
 }
-
-export default Profile
